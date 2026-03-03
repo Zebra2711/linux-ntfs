@@ -1170,7 +1170,7 @@ static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
 	}
 
 	d_instantiate_new(dentry, VFS_I(ni));
-	return ERR_PTR(err);
+	return NULL;
 #else
 	if (IS_ERR(ni)) {
 		err = PTR_ERR(ni);
@@ -1281,10 +1281,7 @@ static int __ntfs_link(struct ntfs_inode *ni, struct ntfs_inode *dir_ni,
 
 	/* Create FILE_NAME attribute. */
 	fn_len = sizeof(struct file_name_attr) + name_len * sizeof(__le16);
-	if (name_len > NTFS_MAX_NAME_LEN) {
-		err = -EIO;
-		goto err_out;
-	}
+
 	fn = kzalloc(fn_len, GFP_NOFS);
 	if (!fn) {
 		err = -ENOMEM;

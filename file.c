@@ -28,6 +28,10 @@
 #include "bitmap.h"
 #include "uapi_ntfs.h"
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+#include <linux/filelock.h>
+#endif
+
 /*
  * ntfs_file_open - called when an inode is about to be opened
  * @vi:		inode to be opened
@@ -768,7 +772,11 @@ static int ntfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 		return -EOPNOTSUPP;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	if (vma_desc_test_flags(desc, VMA_WRITE_BIT)) {
+#else
 	if (desc->vm_flags & VM_WRITE) {
+#endif
 #else
 	if (vma->vm_flags & VM_WRITE) {
 #endif
@@ -778,8 +786,13 @@ static int ntfs_file_mmap(struct file *file, struct vm_area_struct *vma)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
 		from = ((loff_t)desc->pgoff << PAGE_SHIFT);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 19, 0)
+		to = min_t(loff_t, i_size_read(inode),
+			   from + vma_desc_size(desc));
+#else
 		to = min_t(loff_t, i_size_read(inode),
 			   from + desc->end - desc->start);
+#endif
 #else
 		from = ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
 		to = min_t(loff_t, i_size_read(inode),
@@ -1319,6 +1332,9 @@ const struct file_operations ntfs_file_ops = {
 #endif
 #endif
 	.fallocate	= ntfs_fallocate,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	.setlease	= generic_setlease,
+#endif
 };
 
 const struct inode_operations ntfs_file_inode_ops = {

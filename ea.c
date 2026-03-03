@@ -684,7 +684,8 @@ out:
 	a->flags = new_aflags;
 	mark_mft_record_dirty(ctx->ntfs_ino);
 err_out:
-	ntfs_attr_put_search_ctx(ctx);
+	if (ctx)
+		ntfs_attr_put_search_ctx(ctx);
 	unmap_mft_record(ni);
 	return err;
 }
@@ -800,8 +801,7 @@ struct posix_acl *ntfs_get_acl(struct mnt_idmap *idmap, struct dentry *dentry,
 	int err;
 	void *buf;
 
-	/* Allocate PATH_MAX bytes. */
-	buf = __getname();
+	buf = kmalloc(PATH_MAX, GFP_KERNEL);
 	if (!buf)
 		return ERR_PTR(-ENOMEM);
 
@@ -829,7 +829,7 @@ struct posix_acl *ntfs_get_acl(struct mnt_idmap *idmap, struct dentry *dentry,
 	if (!IS_ERR(acl))
 		set_cached_acl(inode, type, acl);
 
-	__putname(buf);
+	kfree(buf);
 
 	return acl;
 }
@@ -878,6 +878,11 @@ static noinline int ntfs_set_acl_ex(struct mnt_idmap *idmap,
 		value = NULL;
 		flags = XATTR_REPLACE;
 	} else {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		value = posix_acl_to_xattr(&init_user_ns, acl, &size, GFP_NOFS);
+		if (!value)
+			return -ENOMEM;
+#else
 		size = posix_acl_xattr_size(acl->a_count);
 		value = kmalloc(size, GFP_NOFS);
 		if (!value)
@@ -885,6 +890,7 @@ static noinline int ntfs_set_acl_ex(struct mnt_idmap *idmap,
 		err = posix_acl_to_xattr(&init_user_ns, acl, value, size);
 		if (err < 0)
 			goto out;
+#endif
 		flags = 0;
 	}
 
