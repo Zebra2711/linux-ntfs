@@ -814,7 +814,7 @@ err_out:
 	return err;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0)
 static int ntfs_test_inode_wb(struct inode *vi, u64 ino, void *data)
 #else
 static int ntfs_test_inode_wb(struct inode *vi, unsigned long ino, void *data)

@@ -39,7 +39,7 @@ static void ntfs_iomap_read_end_io(struct bio *bio)
 }
 #endif
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0)
 static void ntfs_iomap_bio_submit_read(const struct iomap_iter *iter,
 	struct iomap_read_folio_ctx *ctx)
 {
