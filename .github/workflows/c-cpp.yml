@@ -86,6 +86,40 @@ jobs:
         make -j$((`nproc`+1)) KBUILD_MODPOST_WARN=1 KBUILD_MODPOST_NOFINAL=1 fs/ntfs/ntfs.ko
         cd ../linux-ntfs
         rm -rf ../linux-6.18.22/
+    - name: build test with 6.19 kernels
+      run: |
+        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.19.12.tar.gz
+        tar xf linux-6.19.12.tar.gz
+        rm linux-6.19.12.tar.gz
+        mkdir linux-6.19.12/fs/ntfs/
+        mv linux-6.19.12 ../
+        cp -ar * ../linux-6.19.12/fs/ntfs/
+        cd ../linux-6.19.12/
+        yes "" | make oldconfig > /dev/null
+        sed -i '/source "fs\/fat\/Kconfig"/a source "fs\/ntfs\/Kconfig"' fs/Kconfig
+        sed -i '/obj-\$(CONFIG_EXFAT_FS).*+= exfat\//i obj-$(CONFIG_NTFS_FS)       += ntfs/' fs/Makefile
+        echo 'CONFIG_NTFS_FS=m' >> .config
+        echo 'CONFIG_GENDWARFKSYMS=n' >> .config
+        make -j$((`nproc`+1)) KBUILD_MODPOST_WARN=1 KBUILD_MODPOST_NOFINAL=1 fs/ntfs/ntfs.ko
+        cd ../linux-ntfs
+        rm -rf ../linux-6.19.12/
+    - name: build test with 7.0 kernels
+      run: |
+        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v7.x/linux-7.0.tar.gz
+        tar xf linux-7.0.tar.gz
+        rm linux-7.0.tar.gz
+        mkdir linux-7.0/fs/ntfs/
+        mv linux-7.0 ../
+        cp -ar * ../linux-7.0/fs/ntfs/
+        cd ../linux-7.0/
+        yes "" | make oldconfig > /dev/null
+        sed -i '/source "fs\/fat\/Kconfig"/a source "fs\/ntfs\/Kconfig"' fs/Kconfig
+        sed -i '/obj-\$(CONFIG_EXFAT_FS).*+= exfat\//i obj-$(CONFIG_NTFS_FS)       += ntfs/' fs/Makefile
+        echo 'CONFIG_NTFS_FS=m' >> .config
+        echo 'CONFIG_GENDWARFKSYMS=n' >> .config
+        make -j$((`nproc`+1)) KBUILD_MODPOST_WARN=1 KBUILD_MODPOST_NOFINAL=1 fs/ntfs/ntfs.ko
+        cd ../linux-ntfs
+        rm -rf ../linux-7.0/
     - name: Prerequisite for xfstests testing
       run: |
         sudo apt-get install linux-headers-$(uname -r)
