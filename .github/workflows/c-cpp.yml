@@ -27,7 +27,7 @@ jobs:
         sudo apt-get remove libntfs-3g89 ntfs-3g
     - name: build test with 6.1 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.1.161.tar.gz
+        wget -q --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.1.161.tar.gz
         tar xf linux-6.1.161.tar.gz
         rm linux-6.1.161.tar.gz
         rm -rf linux-6.1.161/fs/ntfs/*
@@ -41,7 +41,7 @@ jobs:
         rm -rf ../linux-6.1.161/
     - name: build test with 6.6 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.6.122.tar.gz
+        wget -q --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.6.122.tar.gz
         tar xf linux-6.6.122.tar.gz
         rm linux-6.6.122.tar.gz
         rm -rf linux-6.6.122/fs/ntfs/*
@@ -55,7 +55,7 @@ jobs:
         rm -rf ../linux-6.6.122/
     - name: build test with 6.12 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.12.68.tar.gz
+        wget -q --show-progress --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.12.68.tar.gz
         tar xf linux-6.12.68.tar.gz
         rm linux-6.12.68.tar.gz
         mkdir linux-6.12.68/fs/ntfs/
@@ -71,7 +71,7 @@ jobs:
         rm -rf ../linux-6.12.68/
     - name: build test with 6.18 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.18.22.tar.gz
+        wget -q --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.18.22.tar.gz
         tar xf linux-6.18.22.tar.gz
         rm linux-6.18.22.tar.gz
         mkdir linux-6.18.22/fs/ntfs/
@@ -88,7 +88,7 @@ jobs:
         rm -rf ../linux-6.18.22/
     - name: build test with 6.19 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.19.12.tar.gz
+        wget -q --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.19.12.tar.gz
         tar xf linux-6.19.12.tar.gz
         rm linux-6.19.12.tar.gz
         mkdir linux-6.19.12/fs/ntfs/
@@ -105,7 +105,7 @@ jobs:
         rm -rf ../linux-6.19.12/
     - name: build test with 7.0 kernels
       run: |
-        wget --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v7.x/linux-7.0.tar.gz
+        wget -q --progress=bar:force --no-check-certificate https://mirrors.edge.kernel.org/pub/linux/kernel/v7.x/linux-7.0.tar.gz
         tar xf linux-7.0.tar.gz
         rm linux-7.0.tar.gz
         mkdir linux-7.0/fs/ntfs/
